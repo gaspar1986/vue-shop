@@ -31,7 +31,7 @@
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -39,7 +39,9 @@
         </li>
       </ul>
     </div>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
+              :minPrice="seller.minPrice"></shopcart>
+
   </div>
 </template>
 <script>
@@ -83,9 +85,29 @@
           }
         }
         return 0
+      },
+      selectFoods () {
+        let foods = []
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food)
+            }
+          })
+        })
+        return foods
       }
     },
     methods: {
+      addFood (target) {
+        this._drop(target)
+      },
+      _drop (target) {
+        // 体验优化,异步执行下落动画
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target)
+        })
+      },
       selectMenu (index, event) {
         if (!event._constructed) {
           return
@@ -97,6 +119,7 @@
       _initScroll () {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {click: true})
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+          click: true,
           probeType: 3
         })
         this.foodsScroll.on('scroll', (pos) => {
@@ -122,7 +145,6 @@
 </script>
 <style lang="less" rel="stylesheet/less">
   @import "../../common/less/mixin";
-
   .goods {
     display: flex;
     position: absolute;
@@ -242,6 +264,11 @@
                 color: rgb(147, 153, 159);
               }
             }
+          }
+          .cartcontrol-wrapper {
+            position: absolute;
+            right: 0;
+            bottom: 12px;
           }
         }
       }
