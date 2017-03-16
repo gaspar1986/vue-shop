@@ -15,7 +15,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-1px">
+            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px">
               <div class="icon">
                 <img :src="food.icon" width="57" height="57" alt="">
               </div>
@@ -41,13 +41,14 @@
     </div>
     <shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice"
               :minPrice="seller.minPrice"></shopcart>
-
+    <food :food="selectedFood" ref="food" @add="addFood"></food>
   </div>
 </template>
 <script>
   import BScroll from 'better-scroll'
   import shopcart from '../shopcart/shopcart.vue'
   import cartcontrol from '../cartcontrol/cartcontrol.vue'
+  import food from '../food/food.vue'
   const ERR_OK = 0
   export default {
     props: {
@@ -59,7 +60,8 @@
       return {
         goods: [],
         listHeight: [],
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       }
     },
     created () {
@@ -99,6 +101,13 @@
       }
     },
     methods: {
+      selectFood (food, event) {
+        if (!event._constructed) {
+          return
+        }
+        this.selectedFood = food
+        this.$refs.food.show()
+      },
       addFood (target) {
         this._drop(target)
       },
@@ -138,12 +147,14 @@
     },
     components: {
       shopcart,
-      cartcontrol
+      cartcontrol,
+      food
     }
   }
 </script>
 <style lang="less" rel="stylesheet/less">
   @import "../../common/less/mixin";
+
   .goods {
     display: flex;
     position: absolute;
