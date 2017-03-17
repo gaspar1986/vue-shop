@@ -66,7 +66,7 @@
   </div>
 </template>
 <script>
-  import star from 'components/star/Star'
+  import star from '../../components/star/Star'
   export default {
     props: {
       seller: {
