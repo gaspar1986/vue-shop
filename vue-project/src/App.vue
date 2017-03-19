@@ -12,53 +12,63 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
-    <div class="footer">i am footer</div>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
+
+    <div class="footer"></div>
   </div>
 </template>
 
 <script>
+  import {urlParse} from 'common/js/util'
   import header from './components/header/header.vue'
   const ERR_OK = 0
   export default {
-      data () {
-          return {
-              seller: {}
-          }
-      },
-      created () {
-          this.$http.get('/api/seller').then((res) => {
-            res = res.body
-            if (res.errno === ERR_OK) {
-              this.seller = res.data
-            }
-          })
-      },
-      components: {'v-header': header}
+    data () {
+      return {
+        seller: {
+          id: (() => {
+            let queryParam = urlParse()
+            return queryParam.id
+          })()
+        }
+      }
+    },
+    created () {
+      this.$http.get('/api/seller').then((res) => {
+        res = res.body
+        if (res.errno === ERR_OK) {
+            this.seller = Object.assign({}, this.seller, res.data)
+        }
+      })
+    },
+    components: {'v-header': header}
   }
 </script>
 
 <style lang="less" rel="stylesheet/less">
   @import "common/less/index";
+
   #app {
-    & > .header{
-      font-size:20px;
+    & > .header {
+      font-size: 20px;
     }
-    .tab{
+    .tab {
       display: flex;
       width: 100%;
       height: 40px;
       line-height: 40px;
-      .border-1px(rgba(7,17,27,0.1));
-      & .tab-item{
-        flex:auto;
+      .border-1px(rgba(7, 17, 27, 0.1));
+      & .tab-item {
+        flex: auto;
         text-align: center;
-        & > a{
+        & > a {
           display: block;
           font-size: 14px;
-          color:rgb(77,85,93);
-          &.active{
-            color:rgb(240,20,20);
+          color: rgb(77, 85, 93);
+          &.active {
+            color: rgb(240, 20, 20);
           }
         }
       }

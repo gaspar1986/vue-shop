@@ -301,13 +301,13 @@
                 margin-right: 6px;
                 background-size:16px 16px;
                 background-repeat: no-repeat;
-                &.descrease {
+                &.decrease {
                   .bg-image('../../components/header/decrease_2');
                 }
                 &.discount {
                   .bg-image('../../components/header/discount_2');
                 }
-                &.guaranee {
+                &.guarantee {
                   .bg-image('../../components/header/guarantee_2');
                 }
                 &.invoice {
